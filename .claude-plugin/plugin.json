@@ -1,0 +1,9 @@
+{
+  "name": "plugin-builder",
+  "version": "1.0.0",
+  "description": "Guided workflow for creating Claude Code plugins from scratch - brainstorm, design, scaffold, implement, and distribute.",
+  "author": {
+    "name": "Muhsin"
+  },
+  "keywords": ["plugin", "builder", "scaffold", "creator", "development"]
+}
