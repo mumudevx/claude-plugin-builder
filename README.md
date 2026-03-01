@@ -45,7 +45,7 @@ The skill activates automatically when you mention creating, building, or making
 
 ## Optional Dependencies
 
-- **superpowers** plugin — If installed, provides enhanced brainstorming and workflow orchestration. The plugin works without it, using its own built-in workflow.
+- **[superpowers](https://github.com/obra/superpowers)** plugin — If installed, provides enhanced brainstorming and workflow orchestration. The plugin works without it, using its own built-in workflow.
 
 ## Plugin Components Reference
 
