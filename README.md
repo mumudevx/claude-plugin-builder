@@ -11,7 +11,7 @@ claude --plugin-dir /path/to/plugin-builder
 
 ### Permanent
 ```bash
-claude plugin add /path/to/plugin-builder
+claude plugin install plugin-builder@<marketplace-name>
 ```
 
 ## Usage

@@ -248,9 +248,8 @@ When the plugin is ready for sharing:
 
 Quick distribution options:
 1. **Local**: `claude --plugin-dir /path/to/plugin` — single session
-2. **Permanent local**: `claude plugin add /path/to/plugin` — persists across sessions
-3. **Git repo**: Share the repo URL, users install with `claude plugin add <url>`
-4. **Marketplace**: Create a `marketplace.json` and host on GitHub
+2. **Marketplace**: Create a `.claude-plugin/marketplace.json`, host on GitHub, users install with `/plugin install <name>@<marketplace>`
+3. **CLI install**: `claude plugin install <plugin-name>@<marketplace-name>` — persists across sessions
 
 ## Red Flags
 

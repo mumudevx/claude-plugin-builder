@@ -5,13 +5,13 @@
 | Method | Scope | Persistence | Best For |
 |--------|-------|-------------|----------|
 | `claude --plugin-dir ./path` | Single session | No | Development & testing |
-| `claude plugin add ./path` | Local install | Yes | Personal use |
-| `claude plugin add <git-url>` | From repo | Yes | Sharing with others |
+| `/plugin install ./path` | Local install | Yes | Personal use |
+| `/plugin install <git-url>` | From repo | Yes | Sharing with others |
 | Marketplace | Public discovery | Yes | Wide distribution |
 
 ## What Is a Marketplace?
 
-A marketplace is a **Git repository** containing a `marketplace.json` file that lists available plugins. Users add a marketplace to discover and install plugins from it.
+A marketplace is a **Git repository** containing a `.claude-plugin/marketplace.json` file that lists available plugins. Users add a marketplace to discover and install plugins from it.
 
 Marketplaces are decentralized — anyone can create one. The Anthropic official marketplace is just one of many.
 
@@ -19,67 +19,72 @@ Marketplaces are decentralized — anyone can create one. The Anthropic official
 
 ```json
 {
-  "name": "My Plugin Marketplace",
-  "description": "A curated collection of Claude Code plugins.",
+  "name": "author-name",
+  "owner": {
+    "name": "Author Display Name"
+  },
+  "metadata": {
+    "description": "Plugins by Author Display Name (author-name)",
+    "homepage": "https://github.com/author-name/my-plugin"
+  },
   "plugins": [
     {
       "name": "my-plugin",
-      "description": "What the plugin does.",
       "version": "1.0.0",
-      "repository": "https://github.com/author/my-plugin",
-      "author": "Author Name",
-      "keywords": ["keyword1", "keyword2"],
-      "license": "MIT"
+      "source": "./plugin",
+      "description": "What the plugin does."
     },
     {
       "name": "another-plugin",
-      "description": "Another plugin description.",
       "version": "2.1.0",
-      "repository": "https://github.com/author/another-plugin",
-      "author": "Author Name",
-      "keywords": ["keyword3"],
-      "license": "MIT"
+      "source": "./plugin",
+      "description": "Another plugin description."
     }
   ]
 }
 ```
 
+### Top-Level Fields
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `name` | Yes | Marketplace identifier (kebab-case). Users see this when installing: `/plugin install plugin-name@marketplace-name` |
+| `owner.name` | Yes | Display name of the marketplace owner |
+| `metadata.description` | No | Short description of the marketplace |
+| `metadata.homepage` | No | Homepage URL for the marketplace |
+
 ### Plugin Entry Fields
 
 | Field | Required | Description |
 |-------|----------|-------------|
-| `name` | Yes | Plugin name (must match plugin's `plugin.json` name) |
-| `description` | Yes | Short description for marketplace listing |
-| `version` | Yes | Current version (semver) |
-| `repository` | Yes | Git URL where the plugin is hosted |
-| `author` | No | Plugin author name |
-| `keywords` | No | Discovery keywords |
-| `license` | No | SPDX license identifier |
+| `name` | Yes | Plugin identifier (kebab-case). Users see this when installing: `/plugin install plugin-name@marketplace-name` |
+| `source` | Yes | Where to fetch the plugin. Can be a relative path (`"./plugins/my-plugin"`), a GitHub object (`{"source": "github", "repo": "owner/repo"}`), a git URL object, or an npm object |
+| `description` | No | Short description for marketplace listing |
+| `version` | No | Current version (semver). If also set in `plugin.json`, `plugin.json` takes priority |
 
 ## Creating a Marketplace on GitHub
 
 1. **Create a new GitHub repository** (e.g., `my-marketplace`)
 
-2. **Add `marketplace.json`** at the repository root with your plugin listings
+2. **Add `.claude-plugin/marketplace.json`** with your plugin listings
 
 3. **Push to GitHub**:
    ```bash
    git init
-   git add marketplace.json
+   git add .claude-plugin/marketplace.json
    git commit -m "Initial marketplace"
    git remote add origin https://github.com/you/my-marketplace.git
    git push -u origin main
    ```
 
 4. **Users register your marketplace**:
-   ```bash
-   claude marketplace add https://github.com/you/my-marketplace
+   ```
+   /plugin marketplace add you/my-marketplace
    ```
 
-5. **Users browse and install**:
-   ```bash
-   claude marketplace search <keyword>
-   claude plugin add <plugin-name>
+5. **Users install**:
+   ```
+   /plugin install <plugin-name>@<marketplace-name>
    ```
 
 ## Version Management
@@ -95,32 +100,41 @@ Follow [Semantic Versioning](https://semver.org/):
 1. Update the version in `plugin.json`
 2. Update `marketplace.json` in your marketplace repo
 3. Commit and push both repositories
-4. Users update with: `claude plugin update <plugin-name>`
+4. Users update with: `claude plugin update <plugin-name>` or `/plugin update <plugin-name>`
 
 ## User Installation Flow
 
-### From Git URL (Direct)
-```bash
-claude plugin add https://github.com/author/my-plugin
-```
-
 ### From Marketplace
-```bash
+```
 # Add a marketplace (once)
-claude marketplace add https://github.com/author/my-marketplace
-
-# Search for plugins
-claude marketplace search "code review"
+/plugin marketplace add author/my-marketplace
 
 # Install a plugin
-claude plugin add plugin-name
+/plugin install plugin-name@marketplace-name
+```
+
+### CLI Commands
+
+All plugin management commands are also available as CLI commands:
+
+```bash
+# Install a plugin
+claude plugin install plugin-name@marketplace-name
 
 # Update a plugin
 claude plugin update plugin-name
 
-# Remove a plugin
-claude plugin remove plugin-name
+# Disable a plugin (without uninstalling)
+claude plugin disable plugin-name
+
+# Enable a disabled plugin
+claude plugin enable plugin-name
+
+# Uninstall a plugin
+claude plugin uninstall plugin-name
 ```
+
+All CLI commands support a `--scope` flag (`user`, `project`, `local`) to control where the plugin is installed.
 
 ## Anthropic Official Marketplace
 
